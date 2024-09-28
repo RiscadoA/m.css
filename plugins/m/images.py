@@ -291,6 +291,36 @@ class ImageGrid(rst.Directive):
 
         return [grid_node]
 
+
+# Element with custom tag
+
+# Check out the page below for a full list of properties we could support:
+# https://img-comparison-slider.sneas.io/examples.html#default
+
+class image_comparison_slider(nodes.Element):
+    tagname = 'img-comparison-slider'
+
+class ImageComparison(rst.Directive):
+    option_spec = {'before': directives.uri,
+                   'after': directives.uri,
+                   'class': directives.class_option}
+    has_content = False
+
+    def run(self):
+        # Create a node for the slider
+        image_comparison_node = image_comparison_slider()
+        image_comparison_node['classes'] += self.options.get('class', [])
+
+        before_image_reference = rst.directives.uri(self.options['before'])
+        before_image_node = nodes.image('', uri=before_image_reference, width='100%', slot='before')
+        image_comparison_node.append(before_image_node)
+
+        after_image_reference = rst.directives.uri(self.options['after'])
+        after_image_node = nodes.image('', uri=after_image_reference, width='100%', slot='after')
+        image_comparison_node.append(after_image_node)
+
+        return [image_comparison_node]
+
 def register_mcss(mcss_settings, **kwargs):
     global default_settings, settings
     settings = copy.deepcopy(default_settings)
@@ -300,6 +330,7 @@ def register_mcss(mcss_settings, **kwargs):
     rst.directives.register_directive('image', Image)
     rst.directives.register_directive('figure', Figure)
     rst.directives.register_directive('image-grid', ImageGrid)
+    rst.directives.register_directive('image-comparison', ImageComparison)
 
 # Below is only Pelican-specific functionality. If Pelican is not found, these
 # do nothing.

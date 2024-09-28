@@ -308,6 +308,7 @@ class SaneHtmlTranslator(HTMLTranslator):
         ext = os.path.splitext(uri)[1].lower()
         atts['src'] = uri
         if 'alt' in node: atts['alt'] = node['alt']
+        if 'slot' in node: atts['slot'] = node['slot']
         style = []
         if node.get('width'):
             style += ['width: {}'.format(node['width'])]
@@ -462,6 +463,14 @@ class SaneHtmlTranslator(HTMLTranslator):
 
     def depart_container(self, node):
         self.body.append('</div>\n')
+        
+    # Custom image comparison slider
+    def visit_image_comparison_slider(self, node):
+        atts = {}
+        self.body.append(self.starttag(node, 'img-comparison-slider', **atts))
+
+    def depart_image_comparison_slider(self, node):
+        self.body.append('</img-comparison-slider>\n')
 
     # Use HTML5 <figure> element for figures
     def visit_figure(self, node):
