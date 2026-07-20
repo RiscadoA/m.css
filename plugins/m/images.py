@@ -302,7 +302,9 @@ class image_comparison_slider(nodes.Element):
 
 class ImageComparison(rst.Directive):
     option_spec = {'before': directives.uri,
+                   'before-label': str,
                    'after': directives.uri,
+                   'after-label': str,
                    'class': directives.class_option}
     has_content = False
 
@@ -312,11 +314,13 @@ class ImageComparison(rst.Directive):
         image_comparison_node['classes'] += self.options.get('class', [])
 
         before_image_reference = rst.directives.uri(self.options['before'])
-        before_image_node = nodes.image('', uri=before_image_reference, width='100%', slot='before')
+        before_image_node = nodes.image('', uri=before_image_reference, width='100%', slot='before',
+                                        alt=self.options.get('before-label', ''))
         image_comparison_node.append(before_image_node)
 
         after_image_reference = rst.directives.uri(self.options['after'])
-        after_image_node = nodes.image('', uri=after_image_reference, width='100%', slot='after')
+        after_image_node = nodes.image('', uri=after_image_reference, width='100%', slot='after',
+                                        alt=self.options.get('after-label', ''))
         image_comparison_node.append(after_image_node)
 
         return [image_comparison_node]
